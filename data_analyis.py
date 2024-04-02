@@ -1,8 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import LabelEncoder
 
 def load_data(file_path):
-    """Load data from a CSV file."""
+    """Load data from an Excel file."""
     try:
         data = pd.read_excel(file_path)
         return data
@@ -19,6 +20,10 @@ def analyze_data(data):
         # Display summary statistics
         print("Summary Statistics:")
         print(data.describe())
+
+        # Encode categorical values
+        if roll_number % 2 != 0:
+            data = encode_categorical(data)
 
         # Plot histograms for numeric columns
         print("Histograms:")
@@ -37,10 +42,18 @@ def analyze_data(data):
         plt.ylabel('Count')
         plt.show()
 
+def encode_categorical(data):
+    """Encode categorical columns using label encoding."""
+    label_encoder = LabelEncoder()
+    for col in data.select_dtypes(include=['object']):  # Assuming categorical columns are of type 'object'
+        data[col] = label_encoder.fit_transform(data[col])
+    return data
+
 def main():
-    file_path = input("Enter the path to the CSV file: ")
+    file_path = input("Enter the path to the Excel file: ")
     data = load_data(file_path)
     analyze_data(data)
 
 if __name__ == "__main__":
+    roll_number = 15  # Replace 15 with your actual roll number
     main()
